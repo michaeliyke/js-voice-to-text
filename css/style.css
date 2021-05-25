@@ -1,0 +1,49 @@
+body, html {
+  height: 100%;
+}
+
+.notepad {
+  background-image: url("../img/Paper.jpg");
+  height: 100vh;
+  background-position: center center;
+  background-repeat: repeat-y;
+  background-size: calc(100% - 200px);
+  line-height: 2.4;
+}
+
+.notepad p {
+    margin-left: 22%;
+    margin-top: 3%;
+    width: 72%;
+    font-weight: bold;
+}
+
+#note {
+  font-size: 15px;
+  font-family: italic;
+}
+
+.icons {
+  font-size: 20px;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+@media only screen and (max-width: 1000px) {
+	.notepad {
+  background-image: url("../img/Paper2.jpg");
+  height: 100vh;
+  background-position: center center;
+  background-repeat: repeat-y;
+  background-size: calc(100%);
+  line-height: 2.4;
+}
+.notepad p {
+    font-weight: bold;
+    margin-left: 0%;
+    /*margin-top: 0%;*/
+    width: 97%;
+}
+}
