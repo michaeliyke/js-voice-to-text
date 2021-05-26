@@ -62,7 +62,7 @@ clearNote(){
 
 	handleSpeechStart(event) {
 		console.log("Some sound is being received");
-		this.notepad.textContent = "";
+		// this.notepad.textContent = "";
 	}
 
 	handleSpeechEnd(event) {
