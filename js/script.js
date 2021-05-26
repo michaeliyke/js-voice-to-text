@@ -2,7 +2,11 @@
 
 	const query = d.querySelector.bind(d);
 	const mic = query(".mic img");
-	mic.on = true;
+	const notepad = query("article.notepad p");
+	// mic.on = true;
+
+	const speech = new Voice2Text();
+	speech.init(notepad);
 
 	mic.addEventListener("click", start);
 
@@ -17,10 +21,12 @@
 			mic.on = true;
 			mic.src = icon;
 			mic.alt = "Microphone switch On";
+			speech.startRecognition();
 			return
 		}
 		mic.on = false;
 		mic.src = alternate;
+		speech.stopRecognition();
 		mic.alt = "Microphone switch Off";
 	}
 
