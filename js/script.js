@@ -30,4 +30,5 @@
 		mic.alt = "Microphone switch Off";
 	}
 
+
 }(window, document));

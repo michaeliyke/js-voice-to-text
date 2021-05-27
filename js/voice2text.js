@@ -78,4 +78,22 @@ clearNote(){
 		this.show(`Error occurred in recognition: ${event.error}`, this.notepad);
 	}
 
+	promptSave(button) {
+		if (button == null) {
+			return this.show("Error: Invalid download button!");
+		}
+		const blob = new Blob([this.notepad.textContent], {
+			type: "application/octet-stream;charset=utf-8"
+		});
+    button.href = window.URL.createObjectURL(blob);
+    button.download = "Note-" + (new Date());
+	}
+
+	promptSave() {
+		const content this.notepad.textContent;
+		const uriContent = `data:application/octet-stream,${encodeURIComponent(content)}`
+		// location.href = uriContent;
+		const win = window.open(uriContent, "neuesDokument");
+	}
+
 }
