@@ -18,7 +18,10 @@ article.mic-pane ~ article.tools {
     font-size: 1.2em;
 }
 
-article.tools a {
+article.tools a, 
+article.tools a:link, 
+article.tools a:active, 
+article.tools a:visited {
   color: #7fb0ff;
 }
 
