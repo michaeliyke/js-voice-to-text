@@ -2,17 +2,24 @@
 
 	const query = d.querySelector.bind(d);
 	const mic = query(".mic img");
-	const notepad = query("article.notepad p");
-	// mic.on = true;
+	const pads = {
+		notepad: query("article.notepad p"),
+		copy: query("article.tools .copy"),
+		share: query("article.tools .share"),
+		save: query("article.tools .save"),
+		pdf: query("article.tools .pdf"), 
+		clear: query("article.tools .clear")
+	};
 
 	const speech = new Voice2Text();
-	speech.init(notepad);
+	speech.init(pads);
 
 	mic.addEventListener("click", start);
 
-	function start(event) {
+	function start(even1) {
 		toogleIcon();
 	}
+		
 
 	function toogleIcon() {
 		const icon = "img/mic-on.png";
