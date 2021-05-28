@@ -1,3 +1,26 @@
+class	Note extends String {
+	constructor(notepad) {
+		super(notepad);
+		this.notepad = notepad;
+	}
+
+	toString() {
+		return this.notepad.textContent;
+	}
+
+	clear() {
+		this.safe = String(this.notepad.textContent);
+		this.notepad.textContent = "";
+	}
+
+	restore() {
+		if (this.safe) {
+			this.notepad.textContent = this.safe;
+		}
+	}
+}
+
+
 class Voice2Text {
 	constructor() {
 		const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -16,6 +39,31 @@ class Voice2Text {
 		this.notice = document.createElement("aside");
 	}
 
+	init({notepad, copy, share, save, pdf, clear}) {
+		if (!(notepad && copy && share && save && pdf && clear)) {
+			console.log(arguments[0]);
+			throw new Error(`Pads have to be valid HTMLElement objects`);
+		}
+			
+		notepad.parentNode.insertBefore(this.notice, notepad); //Create noticebaord
+		this.notepad = notepad;
+		this.note = new Note(notepad);
+
+		copy.addEventListener("click", this.copyNote.bind(this));
+		share.addEventListener("click", this.shareNote.bind(this));
+		save.addEventListener("click", this.createBlob.call(this, save).saveNote.bind(this));
+		pdf.addEventListener("click", this.pdfNote.bind(this));
+		clear.addEventListener("click", this.clearNote.bind(this));
+
+		this.recognition.addEventListener("error", this.errorHandler.bind(this));
+		this.recognition.addEventListener("result", this.inputHandler.bind(this));
+		this.recognition.addEventListener("soundstart", this.handleSpeechStart.bind(this));
+		this.recognition.addEventListener("speechend", this.handleSpeechEnd.bind(this));
+		
+	}
+
+
+
 	startRecognition() {
 		this.recognition.start();
 	}
@@ -33,28 +81,6 @@ class Voice2Text {
 
 			this.notepad.textContent = this.transcript;
 		}
-
-	init({notepad, copy, share, save, pdf, clear}) {
-		if (!(notepad && copy && share && save && pdf && clear)) {
-			console.log(arguments[0]);
-			throw new Error(`Pads have to be valid HTMLElement objects`);
-		}
-			
-		notepad.parentNode.insertBefore(this.notice, notepad); //Create noticebaord
-		this.notepad = notepad;
-
-		copy.addEventListener("click", this.copyNote.bind(this));
-		share.addEventListener("click", this.shareNote.bind(this));
-		save.addEventListener("click", this.createBlob.call(this, save).saveNote.bind(this));
-		pdf.addEventListener("click", this.pdfNote.bind(this));
-		clear.addEventListener("click", this.clearNote.bind(this));
-
-		this.recognition.addEventListener("error", this.errorHandler.bind(this));
-		this.recognition.addEventListener("result", this.inputHandler.bind(this));
-		this.recognition.addEventListener("soundstart", this.handleSpeechStart.bind(this));
-		this.recognition.addEventListener("speechend", this.handleSpeechEnd.bind(this));
-		
-	}
 
 	copyNote(){
   navigator.clipboard.writeText(this.notepad.textContent).then((x) =>{
@@ -94,18 +120,26 @@ class Voice2Text {
 	}	
 
 	pdfNote() {
-		function onClick() {
-  var pdf = new jsPDF('p', 'pt', 'letter');
-  pdf.canvas.height = 72 * 11;
-  pdf.canvas.width = 72 * 8.5;
+  var pdf = new jsPDF("portrait", "in", "letter");
+  const verticalOffset = 0.5; //inches on a 8.5x11
+  pdf.setProperties({
+  	title: "Voice2Text: Generated Note",
+  	subject: "Auto-generated PDF Note",
+  	author: "Voice2Text App",
+  	keywords: "PDF Note",
+  	creator: "Voice2Text creators"
+	});
 
-  pdf.fromHTML(document.body);
-
-  pdf.save('test.pdf');
-};
-
-var element = document.getElementById("clickbind");
-element.addEventListener("click", onClick);
+  pdf.setFontSize(22);
+  pdf.text(20, 20, "Voice2Text: Auto-generated Note");
+  pdf.setFontSize(16);
+  pdf.text(20, 30, "Below is your generated note");
+  pdf.setFontSize(14);
+  const set = pdf.splitTextToSize(this.note, 7.5);
+  pdf.text(0.5, verticalOffset + 16 / 72, set);
+  // pdf.fromHTML(this.note);
+  // pdf.addPage();
+  pdf.save(this.filename.replace(".txt", ".pdf"));
 	}
 
 clearNote(){
